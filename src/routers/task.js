@@ -49,16 +49,21 @@ taskRouter.patch("/tasks/:id", async (req, res) => {
 	}
 
 	try {
-		const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
-			new: true,
-			runValidators: true,
-		});
+		// const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+		// 	new: true,
+		// 	runValidators: true,
+		// });
+
+		const task = await Task.findById(req.params.id);
 
 		if (!task) {
 			return res
 				.status(404)
 				.send({ Error: "Cannot find the Task by given ID" });
 		}
+
+		updates.forEach((update) => (task[update] = req.body[update]));
+		await task.save();
 		res.send(task);
 	} catch (error) {
 		return res.status(500).send(error);
