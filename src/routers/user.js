@@ -17,6 +17,19 @@ userRouter.post("/users", async (req, res) => {
 	}
 });
 
+userRouter.post("/users/login", async (req, res) => {
+	try {
+		const user = await User.findByCredentials(
+			req.body.email,
+			req.body.password
+		);
+
+		res.send(user);
+	} catch (error) {
+		res.status(400).send(error);
+	}
+});
+
 userRouter.get("/users", async (req, res) => {
 	try {
 		const users = await User.find({});
@@ -36,7 +49,7 @@ userRouter.get("/users/:id", async (req, res) => {
 		}
 		res.send(user);
 	} catch (error) {
-		res.status(500).send(e);
+		res.status(500).send(error);
 	}
 });
 
